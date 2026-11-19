@@ -1,0 +1,15 @@
+{
+  "domain": "termo_solar",
+  "name": "Termo Solar",
+  "version": "0.1.0",
+  "documentation": "https://github.com/MaxiBass/Integracion_Termo_Solar",
+  "issue_tracker": "https://github.com/MaxiBass/Integracion_Termo_Solar/issues",
+  "requirements": [],
+  "codeowners": [
+    "@MaxiBass"
+  ],
+  "iot_class": "calculated",
+  "config_flow": true,
+  "integration_type": "service",
+  "single_config_entry": true
+}

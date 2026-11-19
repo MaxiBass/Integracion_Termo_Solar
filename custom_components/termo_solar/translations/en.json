@@ -1,0 +1,163 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Termo Solar",
+        "description": "Entities the decision is based on. They can be changed later in Configure. Temperatures and times are set afterwards from the device's entities. It starts in simulation: the heater is not touched until you turn «Control» on.",
+        "data": {
+          "interruptor": "Water heater switch",
+          "temperatura": "Water temperature",
+          "fv": "Solar power",
+          "consumo": "House consumption",
+          "periodo": "Tariff period",
+          "laborable": "Working day",
+          "prevision": "Today's solar forecast",
+          "soc": "Battery charge",
+          "capacidad_bateria": "Battery capacity",
+          "red": "Grid power",
+          "contratada": "Contracted power",
+          "red_conectada": "Grid is present"
+        },
+        "data_description": {
+          "interruptor": "The plug or relay that powers the heater.",
+          "temperatura": "The tank probe, in °C. With no reading the heater is never switched on.",
+          "fv": "In W or kW.",
+          "consumo": "In W or kW: everything the house uses, heater included.",
+          "periodo": "State Punta/Llano/Valle (or P1/P2/P3). During the peak period the grid is never used.",
+          "laborable": "On for days with time-of-use periods. On other days nothing is heated before dawn: it waits for the sun and tops up in the afternoon if needed. Without it, every day is a working day.",
+          "prevision": "Solcast «Forecast today» sensor (kWh, with the half-hourly detail in its attributes). Without it, working days always heat off-peak.",
+          "soc": "In %. Used to know whether surplus sun would be exported.",
+          "capacidad_bateria": "In kWh; 0 if there is no battery.",
+          "red": "In W or kW, positive when importing. With the contracted power, keeps the heater from tripping the limiter.",
+          "contratada": "In W or kW, the one in force right now.",
+          "red_conectada": "When off (power cut) the heater is not switched on."
+        }
+      }
+    },
+    "error": {
+      "misma_entidad": "The same entity is used in two fields.",
+      "falta_pareja": "Grid power and contracted power go together: set both or neither.",
+      "falta_soc": "With a battery the charge sensor is required."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Termo Solar entities",
+        "description": "Change the source entities. Settings and learned values are kept.",
+        "data": {
+          "interruptor": "Water heater switch",
+          "temperatura": "Water temperature",
+          "fv": "Solar power",
+          "consumo": "House consumption",
+          "periodo": "Tariff period",
+          "laborable": "Working day",
+          "prevision": "Today's solar forecast",
+          "soc": "Battery charge",
+          "capacidad_bateria": "Battery capacity",
+          "red": "Grid power",
+          "contratada": "Contracted power",
+          "red_conectada": "Grid is present"
+        },
+        "data_description": {
+          "interruptor": "The plug or relay that powers the heater.",
+          "temperatura": "The tank probe, in °C. With no reading the heater is never switched on.",
+          "fv": "In W or kW.",
+          "consumo": "In W or kW: everything the house uses, heater included.",
+          "periodo": "State Punta/Llano/Valle (or P1/P2/P3). During the peak period the grid is never used.",
+          "laborable": "On for days with time-of-use periods. On other days nothing is heated before dawn: it waits for the sun and tops up in the afternoon if needed. Without it, every day is a working day.",
+          "prevision": "Solcast «Forecast today» sensor (kWh, with the half-hourly detail in its attributes). Without it, working days always heat off-peak.",
+          "soc": "In %. Used to know whether surplus sun would be exported.",
+          "capacidad_bateria": "In kWh; 0 if there is no battery.",
+          "red": "In W or kW, positive when importing. With the contracted power, keeps the heater from tripping the limiter.",
+          "contratada": "In W or kW, the one in force right now.",
+          "red_conectada": "When off (power cut) the heater is not switched on."
+        }
+      }
+    },
+    "error": {
+      "misma_entidad": "The same entity is used in two fields.",
+      "falta_pareja": "Grid power and contracted power go together: set both or neither.",
+      "falta_soc": "With a battery the charge sensor is required."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "estado": {
+        "name": "Status",
+        "state": {
+          "esperando": "Waiting",
+          "sol": "Heating with sun",
+          "valle": "Heating off-peak",
+          "respaldo": "Heating (backup)",
+          "manual": "Switched on by hand",
+          "pausa_icp": "Paused for power limit",
+          "sin_datos": "No data",
+          "sonda": "Probe stuck"
+        }
+      },
+      "motivo": {
+        "name": "Reason"
+      },
+      "energia_necesaria": {
+        "name": "Energy to target"
+      },
+      "temperatura_ducha": {
+        "name": "Expected temperature at shower time"
+      },
+      "excedente": {
+        "name": "Available solar surplus"
+      },
+      "sol_sobrante": {
+        "name": "Expected spare sun today"
+      },
+      "energia_hoy": {
+        "name": "Heater energy today"
+      },
+      "kwh_por_grado": {
+        "name": "kWh per degree"
+      },
+      "consumo_casa": {
+        "name": "Daytime house consumption"
+      }
+    },
+    "binary_sensor": {
+      "orden": {
+        "name": "Heating order"
+      }
+    },
+    "switch": {
+      "control": {
+        "name": "Control"
+      }
+    },
+    "number": {
+      "objetivo": {
+        "name": "Target temperature"
+      },
+      "maxima_solar": {
+        "name": "Maximum temperature with sun"
+      },
+      "minima_ducha": {
+        "name": "Minimum shower temperature"
+      },
+      "potencia": {
+        "name": "Heater power"
+      },
+      "margen_prevision": {
+        "name": "Solar forecast margin"
+      }
+    },
+    "time": {
+      "hora_ducha": {
+        "name": "Shower time"
+      },
+      "hora_respaldo": {
+        "name": "Backup time"
+      },
+      "fin_valle": {
+        "name": "End of off-peak"
+      }
+    }
+  }
+}

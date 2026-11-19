@@ -1,0 +1,163 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Termo Solar",
+        "description": "Entidades de las que sale la decisión. Se pueden cambiar después en Configurar. Las temperaturas y las horas se ajustan luego, desde las entidades del dispositivo. Empieza en simulación: no toca el termo hasta que enciendas «Control».",
+        "data": {
+          "interruptor": "Interruptor del termo",
+          "temperatura": "Temperatura del agua",
+          "fv": "Potencia de las placas",
+          "consumo": "Consumo de la casa",
+          "periodo": "Periodo tarifario",
+          "laborable": "Día laborable",
+          "prevision": "Previsión solar de hoy",
+          "soc": "Carga de la batería",
+          "capacidad_bateria": "Capacidad de la batería",
+          "red": "Potencia de la red",
+          "contratada": "Potencia contratada",
+          "red_conectada": "Hay red eléctrica"
+        },
+        "data_description": {
+          "interruptor": "El enchufe o relé que da corriente al termo.",
+          "temperatura": "La sonda del termo, en °C. Sin dato, el termo no se enciende.",
+          "fv": "En W o kW.",
+          "consumo": "En W o kW: todo lo que gasta la casa, termo incluido.",
+          "periodo": "Estado Punta/Llano/Valle (o P1/P2/P3). En Punta no se calienta con la red.",
+          "laborable": "Encendido los días con tramos horarios. Los demás días no se calienta de madrugada: se espera al sol y, si no llega, se completa por la tarde. Sin él, todos los días son laborables.",
+          "prevision": "Sensor de Solcast «Pronóstico hoy» (kWh, con el detalle por medias horas en sus atributos). Sin él, los laborables se calienta siempre en Valle.",
+          "soc": "En %. Sirve para saber si el sol que sobra se iba a exportar.",
+          "capacidad_bateria": "En kWh; 0 si no hay batería.",
+          "red": "En W o kW, positiva al importar. Junto con la potencia contratada, evita que el termo haga saltar el limitador.",
+          "contratada": "En W o kW, la del momento.",
+          "red_conectada": "Si está apagado (corte de luz), el termo no se enciende."
+        }
+      }
+    },
+    "error": {
+      "misma_entidad": "Hay una entidad repetida en dos campos.",
+      "falta_pareja": "La potencia de la red y la contratada van juntas: pon las dos o ninguna.",
+      "falta_soc": "Con batería hace falta el sensor de carga."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entidades de Termo Solar",
+        "description": "Cambia las entidades de origen. Los ajustes y lo aprendido se conservan.",
+        "data": {
+          "interruptor": "Interruptor del termo",
+          "temperatura": "Temperatura del agua",
+          "fv": "Potencia de las placas",
+          "consumo": "Consumo de la casa",
+          "periodo": "Periodo tarifario",
+          "laborable": "Día laborable",
+          "prevision": "Previsión solar de hoy",
+          "soc": "Carga de la batería",
+          "capacidad_bateria": "Capacidad de la batería",
+          "red": "Potencia de la red",
+          "contratada": "Potencia contratada",
+          "red_conectada": "Hay red eléctrica"
+        },
+        "data_description": {
+          "interruptor": "El enchufe o relé que da corriente al termo.",
+          "temperatura": "La sonda del termo, en °C. Sin dato, el termo no se enciende.",
+          "fv": "En W o kW.",
+          "consumo": "En W o kW: todo lo que gasta la casa, termo incluido.",
+          "periodo": "Estado Punta/Llano/Valle (o P1/P2/P3). En Punta no se calienta con la red.",
+          "laborable": "Encendido los días con tramos horarios. Los demás días no se calienta de madrugada: se espera al sol y, si no llega, se completa por la tarde. Sin él, todos los días son laborables.",
+          "prevision": "Sensor de Solcast «Pronóstico hoy» (kWh, con el detalle por medias horas en sus atributos). Sin él, los laborables se calienta siempre en Valle.",
+          "soc": "En %. Sirve para saber si el sol que sobra se iba a exportar.",
+          "capacidad_bateria": "En kWh; 0 si no hay batería.",
+          "red": "En W o kW, positiva al importar. Junto con la potencia contratada, evita que el termo haga saltar el limitador.",
+          "contratada": "En W o kW, la del momento.",
+          "red_conectada": "Si está apagado (corte de luz), el termo no se enciende."
+        }
+      }
+    },
+    "error": {
+      "misma_entidad": "Hay una entidad repetida en dos campos.",
+      "falta_pareja": "La potencia de la red y la contratada van juntas: pon las dos o ninguna.",
+      "falta_soc": "Con batería hace falta el sensor de carga."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "estado": {
+        "name": "Estado",
+        "state": {
+          "esperando": "Esperando",
+          "sol": "Calentando con sol",
+          "valle": "Calentando en Valle",
+          "respaldo": "Calentando (respaldo)",
+          "manual": "Encendido a mano",
+          "pausa_icp": "En pausa por potencia",
+          "sin_datos": "Sin datos",
+          "sonda": "Sonda atascada"
+        }
+      },
+      "motivo": {
+        "name": "Motivo"
+      },
+      "energia_necesaria": {
+        "name": "Energía hasta el objetivo"
+      },
+      "temperatura_ducha": {
+        "name": "Temperatura prevista a la hora de la ducha"
+      },
+      "excedente": {
+        "name": "Excedente solar disponible"
+      },
+      "sol_sobrante": {
+        "name": "Sol sobrante previsto hoy"
+      },
+      "energia_hoy": {
+        "name": "Energía del termo hoy"
+      },
+      "kwh_por_grado": {
+        "name": "kWh por grado"
+      },
+      "consumo_casa": {
+        "name": "Consumo de la casa de día"
+      }
+    },
+    "binary_sensor": {
+      "orden": {
+        "name": "Orden de calentar"
+      }
+    },
+    "switch": {
+      "control": {
+        "name": "Control"
+      }
+    },
+    "number": {
+      "objetivo": {
+        "name": "Temperatura objetivo"
+      },
+      "maxima_solar": {
+        "name": "Temperatura máxima con sol"
+      },
+      "minima_ducha": {
+        "name": "Temperatura mínima para la ducha"
+      },
+      "potencia": {
+        "name": "Potencia del termo"
+      },
+      "margen_prevision": {
+        "name": "Margen de la previsión solar"
+      }
+    },
+    "time": {
+      "hora_ducha": {
+        "name": "Hora de la ducha"
+      },
+      "hora_respaldo": {
+        "name": "Hora del respaldo"
+      },
+      "fin_valle": {
+        "name": "Fin del Valle"
+      }
+    }
+  }
+}

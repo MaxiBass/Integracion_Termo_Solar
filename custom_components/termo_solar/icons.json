@@ -1,0 +1,86 @@
+{
+  "entity": {
+    "sensor": {
+      "estado": {
+        "default": "mdi:water-boiler",
+        "state": {
+          "sol": "mdi:white-balance-sunny",
+          "valle": "mdi:weather-night",
+          "respaldo": "mdi:transmission-tower",
+          "manual": "mdi:hand-back-right",
+          "pausa_icp": "mdi:pause-octagon",
+          "sin_datos": "mdi:help-circle-outline",
+          "sonda": "mdi:thermometer-alert"
+        }
+      },
+      "motivo": {
+        "default": "mdi:comment-text-outline"
+      },
+      "energia_necesaria": {
+        "default": "mdi:lightning-bolt"
+      },
+      "temperatura_ducha": {
+        "default": "mdi:shower-head"
+      },
+      "excedente": {
+        "default": "mdi:solar-power"
+      },
+      "sol_sobrante": {
+        "default": "mdi:weather-sunny-alert"
+      },
+      "energia_hoy": {
+        "default": "mdi:meter-electric-outline"
+      },
+      "kwh_por_grado": {
+        "default": "mdi:calculator"
+      },
+      "consumo_casa": {
+        "default": "mdi:home-lightning-bolt-outline"
+      }
+    },
+    "binary_sensor": {
+      "orden": {
+        "default": "mdi:water-boiler-off",
+        "state": {
+          "on": "mdi:water-boiler"
+        }
+      }
+    },
+    "switch": {
+      "control": {
+        "default": "mdi:robot-off-outline",
+        "state": {
+          "on": "mdi:robot-outline"
+        }
+      }
+    },
+    "number": {
+      "objetivo": {
+        "default": "mdi:thermometer-check"
+      },
+      "maxima_solar": {
+        "default": "mdi:thermometer-chevron-up"
+      },
+      "minima_ducha": {
+        "default": "mdi:thermometer-low"
+      },
+      "potencia": {
+        "default": "mdi:flash"
+      },
+      "margen_prevision": {
+        "default": "mdi:weather-partly-cloudy"
+      }
+    },
+    "time": {
+      "hora_ducha": {
+        "default": "mdi:shower"
+      },
+      "hora_respaldo": {
+        "default": "mdi:clock-alert-outline"
+      },
+      "fin_valle": {
+        "default": "mdi:clock-end"
+      }
+    }
+  }
+}
