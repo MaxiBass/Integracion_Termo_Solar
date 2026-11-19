@@ -17,6 +17,9 @@ CONF_PERIODO = "periodo"
 CONF_LABORABLE = "laborable"
 CONF_PREVISION = "prevision"
 CONF_RED_CONECTADA = "red_conectada"
+# Ayudante del que sale la temperatura objetivo (opcional): si se indica,
+# manda él y `number.termo_solar_objetivo` solo lo refleja.
+CONF_OBJETIVO_ENTIDAD = "objetivo_entidad"
 # Capacidad útil de la batería en kWh (0 = sin batería).
 CONF_CAPACIDAD_BATERIA = "capacidad_bateria"
 
@@ -32,6 +35,7 @@ FUENTES = (
     CONF_LABORABLE,
     CONF_PREVISION,
     CONF_RED_CONECTADA,
+    CONF_OBJETIVO_ENTIDAD,
 )
 
 # Si existen, el formulario de alta sale relleno con estas entidades (un
@@ -48,14 +52,17 @@ SUGERIDAS = {
     CONF_LABORABLE: "binary_sensor.dia_laborable",
     CONF_PREVISION: "sensor.solcast_pv_forecast_pronostico_hoy",
     CONF_RED_CONECTADA: "binary_sensor.deye_grid_connected",
+    CONF_OBJETIVO_ENTIDAD: "input_number.temperatura_maxima_termo_boiler",
 }
 
 # ── Ajustes (también en las opciones; se cambian desde sus entidades sin
 # recargar) ──
 CONF_CONTROL = "control"
 CONF_OBJETIVO = "objetivo"
-CONF_MAXIMA_SOLAR = "maxima_solar"
-CONF_MINIMA_DUCHA = "minima_ducha"
+# Las otras dos temperaturas van referidas al objetivo, para que al moverlo
+# (según la época del año) se muevan con él.
+CONF_EXTRA_SOL = "extra_sol"
+CONF_MARGEN_DUCHA = "margen_ducha"
 CONF_POTENCIA = "potencia"
 CONF_MARGEN_PREVISION = "margen_prevision"
 CONF_HORA_DUCHA = "hora_ducha"
@@ -66,8 +73,8 @@ AJUSTES_POR_DEFECTO = {
     # Apagado: solo calcula y enseña lo que haría (simulación).
     CONF_CONTROL: False,
     CONF_OBJETIVO: 51.0,
-    CONF_MAXIMA_SOLAR: 60.0,
-    CONF_MINIMA_DUCHA: 42.0,
+    CONF_EXTRA_SOL: 9.0,
+    CONF_MARGEN_DUCHA: 9.0,
     CONF_POTENCIA: 1700.0,
     CONF_MARGEN_PREVISION: 15.0,
     CONF_HORA_DUCHA: "19:00:00",
@@ -78,8 +85,8 @@ AJUSTES_POR_DEFECTO = {
 # (mínimo, máximo, paso, unidad) de los ajustes numéricos.
 NUMEROS = {
     CONF_OBJETIVO: (30.0, 75.0, 1.0, "°C"),
-    CONF_MAXIMA_SOLAR: (30.0, 80.0, 1.0, "°C"),
-    CONF_MINIMA_DUCHA: (25.0, 70.0, 1.0, "°C"),
+    CONF_EXTRA_SOL: (0.0, 30.0, 1.0, "°C"),
+    CONF_MARGEN_DUCHA: (3.0, 30.0, 1.0, "°C"),
     CONF_POTENCIA: (300.0, 4000.0, 50.0, "W"),
     CONF_MARGEN_PREVISION: (0.0, 60.0, 5.0, "%"),
 }

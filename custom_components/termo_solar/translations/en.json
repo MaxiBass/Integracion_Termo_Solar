@@ -7,6 +7,7 @@
         "data": {
           "interruptor": "Water heater switch",
           "temperatura": "Water temperature",
+          "objetivo_entidad": "Helper holding the target temperature",
           "fv": "Solar power",
           "consumo": "House consumption",
           "periodo": "Tariff period",
@@ -21,6 +22,7 @@
         "data_description": {
           "interruptor": "The plug or relay that powers the heater.",
           "temperatura": "The tank probe, in °C. With no reading the heater is never switched on.",
+          "objetivo_entidad": "Optional. If you already have a helper (input_number) with the temperature you want, the integration follows it: change it where you always do and «Target temperature» just mirrors it.",
           "fv": "In W or kW.",
           "consumo": "In W or kW: everything the house uses, heater included.",
           "periodo": "State Punta/Llano/Valle (or P1/P2/P3). During the peak period the grid is never used.",
@@ -48,6 +50,7 @@
         "data": {
           "interruptor": "Water heater switch",
           "temperatura": "Water temperature",
+          "objetivo_entidad": "Helper holding the target temperature",
           "fv": "Solar power",
           "consumo": "House consumption",
           "periodo": "Tariff period",
@@ -62,6 +65,7 @@
         "data_description": {
           "interruptor": "The plug or relay that powers the heater.",
           "temperatura": "The tank probe, in °C. With no reading the heater is never switched on.",
+          "objetivo_entidad": "Optional. If you already have a helper (input_number) with the temperature you want, the integration follows it: change it where you always do and «Target temperature» just mirrors it.",
           "fv": "In W or kW.",
           "consumo": "In W or kW: everything the house uses, heater included.",
           "periodo": "State Punta/Llano/Valle (or P1/P2/P3). During the peak period the grid is never used.",
@@ -135,11 +139,11 @@
       "objetivo": {
         "name": "Target temperature"
       },
-      "maxima_solar": {
-        "name": "Maximum temperature with sun"
+      "extra_sol": {
+        "name": "Extra degrees with spare sun"
       },
-      "minima_ducha": {
-        "name": "Minimum shower temperature"
+      "margen_ducha": {
+        "name": "Degrees below target accepted at shower time"
       },
       "potencia": {
         "name": "Heater power"

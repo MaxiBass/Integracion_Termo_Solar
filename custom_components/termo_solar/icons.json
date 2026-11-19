@@ -58,10 +58,10 @@
       "objetivo": {
         "default": "mdi:thermometer-check"
       },
-      "maxima_solar": {
+      "extra_sol": {
         "default": "mdi:thermometer-chevron-up"
       },
-      "minima_ducha": {
+      "margen_ducha": {
         "default": "mdi:thermometer-low"
       },
       "potencia": {

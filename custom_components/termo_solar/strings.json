@@ -7,6 +7,7 @@
         "data": {
           "interruptor": "Interruptor del termo",
           "temperatura": "Temperatura del agua",
+          "objetivo_entidad": "Ayudante con la temperatura objetivo",
           "fv": "Potencia de las placas",
           "consumo": "Consumo de la casa",
           "periodo": "Periodo tarifario",
@@ -21,6 +22,7 @@
         "data_description": {
           "interruptor": "El enchufe o relé que da corriente al termo.",
           "temperatura": "La sonda del termo, en °C. Sin dato, el termo no se enciende.",
+          "objetivo_entidad": "Opcional. Si ya tienes un ayudante (input_number) con la temperatura a la que quieres el agua, la integración lo sigue: lo cambias donde siempre y «Temperatura objetivo» solo lo refleja.",
           "fv": "En W o kW.",
           "consumo": "En W o kW: todo lo que gasta la casa, termo incluido.",
           "periodo": "Estado Punta/Llano/Valle (o P1/P2/P3). En Punta no se calienta con la red.",
@@ -48,6 +50,7 @@
         "data": {
           "interruptor": "Interruptor del termo",
           "temperatura": "Temperatura del agua",
+          "objetivo_entidad": "Ayudante con la temperatura objetivo",
           "fv": "Potencia de las placas",
           "consumo": "Consumo de la casa",
           "periodo": "Periodo tarifario",
@@ -62,6 +65,7 @@
         "data_description": {
           "interruptor": "El enchufe o relé que da corriente al termo.",
           "temperatura": "La sonda del termo, en °C. Sin dato, el termo no se enciende.",
+          "objetivo_entidad": "Opcional. Si ya tienes un ayudante (input_number) con la temperatura a la que quieres el agua, la integración lo sigue: lo cambias donde siempre y «Temperatura objetivo» solo lo refleja.",
           "fv": "En W o kW.",
           "consumo": "En W o kW: todo lo que gasta la casa, termo incluido.",
           "periodo": "Estado Punta/Llano/Valle (o P1/P2/P3). En Punta no se calienta con la red.",
@@ -135,11 +139,11 @@
       "objetivo": {
         "name": "Temperatura objetivo"
       },
-      "maxima_solar": {
-        "name": "Temperatura máxima con sol"
+      "extra_sol": {
+        "name": "Grados extra con sol sobrante"
       },
-      "minima_ducha": {
-        "name": "Temperatura mínima para la ducha"
+      "margen_ducha": {
+        "name": "Grados de menos admitidos a la hora de la ducha"
       },
       "potencia": {
         "name": "Potencia del termo"

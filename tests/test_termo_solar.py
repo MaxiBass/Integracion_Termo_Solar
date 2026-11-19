@@ -47,7 +47,7 @@ def casi(a: float, b: float, tolerancia: float = 1e-3) -> bool:
 
 SENSORES = ("estado", "motivo", "energia_necesaria", "temperatura_ducha", "excedente",
             "sol_sobrante", "energia_hoy", "kwh_por_grado", "consumo_casa")
-NUMEROS = ("objetivo", "maxima_solar", "minima_ducha", "potencia", "margen_prevision")
+NUMEROS = ("objetivo", "extra_sol", "margen_ducha", "potencia", "margen_prevision")
 HORAS = ("hora_ducha", "hora_respaldo", "fin_valle")
 ENTIDADES = (
     [f"sensor.termo_solar_{k}" for k in SENSORES]
@@ -99,7 +99,8 @@ def test_ficheros() -> None:
     comprobar(set(es["entity"]["sensor"]["estado"]["state"]) == set(plan.ACCIONES),
               "todos los estados del sensor «Estado» están traducidos")
     campos = set(es["config"]["step"]["user"]["data"])
-    comprobar(campos == set(FUENTES) | {"capacidad_bateria"} == set(es["options"]["step"]["init"]["data"]),
+    comprobar(campos == set(FUENTES) | {"capacidad_bateria"} == set(es["options"]["step"]["init"]["data"])
+              == set(es["config"]["step"]["user"]["data_description"]),
               "el formulario tiene texto para cada campo, en el alta y en Configurar")
     comprobar(all(LIMITES[k][0] <= AJUSTES_POR_DEFECTO[k] <= LIMITES[k][1] for k in LIMITES),
               "los valores por defecto caben en los límites de sus entidades")
@@ -391,6 +392,7 @@ FUENTES = {
     "laborable": "binary_sensor.dia_laborable",
     "prevision": "sensor.solcast_pv_forecast_pronostico_hoy",
     "red_conectada": "binary_sensor.deye_grid_connected",
+    "objetivo_entidad": "input_number.temperatura_maxima_termo_boiler",
 }
 
 
@@ -419,6 +421,13 @@ async def _recorrido(directorio: Path) -> None:
     # (lo usa el interruptor «Control»).
     hass.services.async_register("input_boolean", "turn_on", _servicio)
     hass.services.async_register("input_boolean", "turn_off", _servicio)
+
+    # Y un ayudante de mentira para la temperatura objetivo.
+    async def _poner_valor(llamada) -> None:
+        anterior = hass.states.get(llamada.data["entity_id"])
+        hass.states.async_set(llamada.data["entity_id"], str(float(llamada.data["value"])), anterior.attributes)
+
+    hass.services.async_register("input_number", "set_value", _poner_valor)
 
     def fuente(clave: str, valor, unidad: str | None = None, **atributos) -> None:
         if unidad:
@@ -456,6 +465,7 @@ async def _recorrido(directorio: Path) -> None:
         fuente("periodo", "Llano")
         fuente("laborable", "on")
         fuente("red_conectada", "on")
+        fuente("objetivo_entidad", 48.0, "°C", min=20.0, max=69.0, step=1.0)
         fuente("prevision", 10.0, "kWh", detailedForecast=[
             {"period_start": inicio.isoformat(), "pv_estimate": kw} for inicio, kw in _tramos(1.0)
         ])
@@ -491,11 +501,36 @@ async def _recorrido(directorio: Path) -> None:
         dispositivos = dr.async_entries_for_config_entry(dr.async_get(hass), entrada.entry_id)
         comprobar(len(dispositivos) == 1 and dispositivos[0].name == "Termo Solar", "un solo dispositivo")
         comprobar(estado("switch.termo_solar_control").state == "off", "empieza en simulación (Control apagado)")
+        print("\n  · el objetivo sale del ayudante")
+        numero = estado("number.termo_solar_objetivo")
+        comprobar(float(numero.state) == 48.0 and numero.attributes["min"] == 20.0 and numero.attributes["max"] == 69.0,
+                  "«Temperatura objetivo» refleja el ayudante, con sus límites")
+        a = gestor().ajustes()
+        comprobar((a.objetivo, a.maxima_solar, a.minima_ducha) == (48.0, 57.0, 39.0),
+                  "la máxima con sol y la mínima de la ducha van referidas al objetivo (+9 / −9)")
+        fuente("objetivo_entidad", 40.0, "°C", min=20.0, max=69.0, step=1.0)
+        await hass.async_block_till_done()
+        a = gestor().ajustes()
+        atributos = estado("sensor.termo_solar_estado").attributes
+        comprobar((a.objetivo, a.maxima_solar, a.minima_ducha) == (40.0, 49.0, 31.0)
+                  and float(estado("number.termo_solar_objetivo").state) == 40.0
+                  and (atributos["objetivo"], atributos["maxima_con_sol"], atributos["minima_ducha"]) == (40.0, 49.0, 31.0),
+                  "al bajar el ayudante a 40, todo baja con él al momento")
+        fuente("objetivo_entidad", "unavailable")
+        await hass.async_block_till_done()
+        comprobar(gestor().ajustes().objetivo == 40.0 and entrada.options["objetivo"] == 40.0,
+                  "si el ayudante deja de estar disponible, sigue con su último valor")
+        fuente("objetivo_entidad", 40.0, "°C", min=20.0, max=69.0, step=1.0)
+        await ajustar("number", "objetivo", 50)
+        await hass.async_block_till_done()
+        comprobar(estado(FUENTES["objetivo_entidad"]).state == "50.0" and gestor().ajustes().objetivo == 50.0,
+                  "cambiar «Temperatura objetivo» escribe en el ayudante: una sola verdad")
+
         # Ajustes de la prueba: termo de 2000 W, objetivo 50, mínima 40.
-        for clave, valor in (("potencia", 2000), ("objetivo", 50), ("minima_ducha", 40)):
+        for clave, valor in (("potencia", 2000), ("extra_sol", 10), ("margen_ducha", 10)):
             await ajustar("number", clave, valor)
         comprobar(entrada.options["potencia"] == 2000.0 and entrada.state is ConfigEntryState.LOADED
-                  and gestor().ajustes().potencia == 2000.0,
+                  and gestor().ajustes().potencia == 2000.0 and gestor().ajustes().minima_ducha == 40.0,
                   "los ajustes se cambian desde sus entidades, se guardan y no recargan")
 
         print("\n  · simulación: decide pero no toca el termo")
@@ -623,7 +658,7 @@ async def _recorrido(directorio: Path) -> None:
 
         diagnostico = await async_get_config_entry_diagnostics(hass, entrada)
         comprobar(json.dumps(diagnostico, default=str) and diagnostico["decision"]["accion"] in plan.ACCIONES
-                  and diagnostico["fuentes"]["temperatura"] == "30.0",
+                  and diagnostico["fuentes"]["temperatura"] == "30.0" and diagnostico["ajustes"]["objetivo"] == "50.0",
                   "el diagnóstico se genera y es serializable")
 
         comprobar(await hass.config_entries.async_unload(entrada.entry_id), "la entrada se descarga")

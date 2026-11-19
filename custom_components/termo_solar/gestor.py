@@ -48,10 +48,11 @@ from .const import (
     CONF_HORA_RESPALDO,
     CONF_INTERRUPTOR,
     CONF_LABORABLE,
+    CONF_EXTRA_SOL,
+    CONF_MARGEN_DUCHA,
     CONF_MARGEN_PREVISION,
-    CONF_MAXIMA_SOLAR,
-    CONF_MINIMA_DUCHA,
     CONF_OBJETIVO,
+    CONF_OBJETIVO_ENTIDAD,
     CONF_PERIODO,
     CONF_POTENCIA,
     CONF_PREVISION,
@@ -158,7 +159,11 @@ class GestorTermo:
 
     @callback
     def async_arrancar(self) -> None:
-        vigiladas = [eid for clave in (CONF_INTERRUPTOR, CONF_TEMPERATURA) if (eid := self.opciones.get(clave))]
+        vigiladas = [
+            eid
+            for clave in (CONF_INTERRUPTOR, CONF_TEMPERATURA, CONF_OBJETIVO_ENTIDAD)
+            if (eid := self.opciones.get(clave))
+        ]
         self._quitar = [
             async_track_state_change_event(self.hass, vigiladas, self._al_cambiar),
             async_track_time_interval(self.hass, self._al_tocar, INTERVALO, name=f"{DOMAIN} decisión"),
@@ -204,6 +209,13 @@ class GestorTermo:
 
     async def async_cambiar_ajuste(self, clave: str, valor: Any) -> None:
         """Cambia un ajuste (desde su entidad) sin recargar."""
+        externo = self.opciones.get(CONF_OBJETIVO_ENTIDAD)
+        if clave == CONF_OBJETIVO and externo:
+            # Manda el ayudante: se le escribe a él y ya volverá por su estado.
+            await self.hass.services.async_call(
+                externo.split(".")[0], "set_value", {ATTR_ENTITY_ID: externo, "value": valor}, blocking=True
+            )
+            return
         self.opciones[clave] = valor
         self.hass.config_entries.async_update_entry(
             self.entry, options={**self.entry.options, clave: valor}
@@ -216,12 +228,27 @@ class GestorTermo:
             self.ordenado = self.manual = False
         self.async_actualizar()
 
+    def objetivo(self) -> float:
+        """La temperatura objetivo: la del ayudante si hay uno, o la propia.
+
+        El último valor leído del ayudante se guarda como propio, para
+        seguir con él si el ayudante deja de estar disponible.
+        """
+        externo = self._numero(CONF_OBJETIVO_ENTIDAD)
+        if externo is not None and externo != self.opciones.get(CONF_OBJETIVO):
+            self.opciones[CONF_OBJETIVO] = externo
+            self.hass.config_entries.async_update_entry(
+                self.entry, options={**self.entry.options, CONF_OBJETIVO: externo}
+            )
+        return float(self.opcion(CONF_OBJETIVO))
+
     def ajustes(self) -> plan.Ajustes:
         defecto = AJUSTES_POR_DEFECTO
+        objetivo = self.objetivo()
         return plan.Ajustes(
-            objetivo=float(self.opcion(CONF_OBJETIVO)),
-            maxima_solar=float(self.opcion(CONF_MAXIMA_SOLAR)),
-            minima_ducha=float(self.opcion(CONF_MINIMA_DUCHA)),
+            objetivo=objetivo,
+            maxima_solar=objetivo + float(self.opcion(CONF_EXTRA_SOL)),
+            minima_ducha=objetivo - float(self.opcion(CONF_MARGEN_DUCHA)),
             potencia=float(self.opcion(CONF_POTENCIA)),
             margen_prevision=float(self.opcion(CONF_MARGEN_PREVISION)),
             hora_ducha=_hora(self.opcion(CONF_HORA_DUCHA), defecto[CONF_HORA_DUCHA]),
@@ -472,6 +499,7 @@ class GestorTermo:
             },
             "prevision": self.prevision,
             "memoria": self.memoria.a_dict(),
+            "ajustes": {k: str(v) for k, v in self.ajustes().__dict__.items()},
             "kwh_por_grado": self.kwh_por_grado,
             "ciclos": self.ciclos,
             "perfil": self.perfil,
@@ -483,7 +511,7 @@ class GestorTermo:
                 for clave in (
                     CONF_INTERRUPTOR, CONF_TEMPERATURA, CONF_FV, CONF_CONSUMO, CONF_RED,
                     CONF_CONTRATADA, CONF_SOC, CONF_PERIODO, CONF_LABORABLE, CONF_PREVISION,
-                    CONF_RED_CONECTADA,
+                    CONF_RED_CONECTADA, CONF_OBJETIVO_ENTIDAD,
                 )
             },
         }

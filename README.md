@@ -60,9 +60,9 @@ automatizaciones del termo y enciende «Control».
 | `sensor.termo_solar_kwh_por_grado` | Aprendido de cada calentado |
 | `sensor.termo_solar_consumo_casa` | Consumo de la casa de día, aprendido hora a hora |
 | `switch.termo_solar_control` | Encendido: manda. Apagado: simula |
-| `number.termo_solar_objetivo` | Temperatura objetivo (51 °C) |
-| `number.termo_solar_maxima_solar` | Temperatura máxima con sol sobrante (60 °C) |
-| `number.termo_solar_minima_ducha` | Temperatura mínima a la hora de la ducha (42 °C) |
+| `number.termo_solar_objetivo` | Temperatura objetivo (51 °C). Si en el alta indicas un ayudante, es el suyo: lo refleja y, si la cambias aquí, se escribe en él |
+| `number.termo_solar_extra_sol` | Grados por encima del objetivo hasta los que calienta con sol sobrante (9 → 60 °C) |
+| `number.termo_solar_margen_ducha` | Grados por debajo del objetivo que se admiten a la hora de la ducha (9 → 42 °C) |
 | `number.termo_solar_potencia` | Potencia del termo (1700 W) |
 | `number.termo_solar_margen_prevision` | Cuánto se le quita a la previsión solar (15 %) |
 | `time.termo_solar_hora_ducha` | Hora de la ducha (19:00) |
@@ -75,13 +75,18 @@ Obligatorio: el interruptor del termo, una sonda de temperatura del agua,
 la potencia de las placas, el consumo de la casa y un sensor con el periodo
 tarifario (`Punta` / `Llano` / `Valle` o `P1` / `P2` / `P3`).
 
-Opcional: un sensor de día laborable, la previsión de
+Opcional: un ayudante (`input_number`) con la temperatura objetivo, si ya
+la ajustas en uno según la época del año; un sensor de día laborable, la previsión de
 [Solcast](https://github.com/BJReplay/ha-solcast-solar) («Pronóstico hoy»),
 la carga de la batería y su capacidad, la potencia de la red con la
 potencia contratada, y un sensor de «hay red».
 
+Las otras dos temperaturas van **referidas al objetivo**: al bajarlo en
+verano o subirlo en invierno, la máxima con sol y la mínima de la ducha se
+mueven con él.
+
 El termostato del propio termo tiene que estar **por encima** de la
-temperatura máxima con sol: es el seguro si Home Assistant se para con el
+temperatura máxima con sol (objetivo + grados extra): es el seguro si Home Assistant se para con el
 termo encendido.
 
 ## Instalación

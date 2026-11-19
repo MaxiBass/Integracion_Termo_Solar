@@ -103,7 +103,21 @@ respeta hasta la temperatura máxima.
 Al apagar «Control» se apaga el termo si lo había encendido la integración:
 nadie más lo iba a apagar.
 
-## 7. Entidades
+## 7. Una sola temperatura que tocar
+
+El autor ajusta a mano la temperatura del agua según la época del año, en
+un ayudante que ya usaban sus automatizaciones. Por eso:
+
+- Si en el alta se indica ese **ayudante**, el objetivo es el suyo. No hay
+  dos sitios donde cambiarlo: `number.termo_solar_objetivo` lo refleja (con
+  sus límites) y, si se cambia ahí, se escribe en el ayudante. Si el
+  ayudante deja de estar disponible, se sigue con su último valor.
+- La temperatura máxima con sol y la mínima de la ducha no son valores
+  fijos sino **grados respecto al objetivo** (+9 y −9 por defecto). Con
+  valores fijos, al bajar el objetivo en verano la mínima de la ducha
+  quedaría por encima de él y el respaldo saltaría todas las tardes.
+
+## 8. Entidades
 
 `entity_id` fijos (`sensor.termo_solar_estado`…), para que paneles e
 historial no dependan de cómo se llame el dispositivo. Los ajustes del día
@@ -111,7 +125,7 @@ a día son entidades (`number`, `time`, `switch`) y se guardan en las
 opciones de la entrada sin recargar; las entidades de origen se cambian en
 Configurar.
 
-## 8. Pendiente
+## 9. Pendiente
 
 - Aprender también la potencia del termo y las pérdidas.
 - Avisar (notificación) cuando el respaldo no llega a tiempo o la sonda se

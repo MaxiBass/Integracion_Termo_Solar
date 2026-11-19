@@ -26,6 +26,7 @@ from .const import (
     CONF_FV,
     CONF_INTERRUPTOR,
     CONF_LABORABLE,
+    CONF_OBJETIVO_ENTIDAD,
     CONF_PERIODO,
     CONF_PREVISION,
     CONF_RED,
@@ -47,6 +48,9 @@ ESQUEMA = vol.Schema(
             EntitySelectorConfig(domain=["switch", "input_boolean"])
         ),
         vol.Required(CONF_TEMPERATURA): _POTENCIA,
+        vol.Optional(CONF_OBJETIVO_ENTIDAD): EntitySelector(
+            EntitySelectorConfig(domain=["input_number", "number"])
+        ),
         vol.Required(CONF_FV): _POTENCIA,
         vol.Required(CONF_CONSUMO): _POTENCIA,
         vol.Required(CONF_PERIODO): EntitySelector(

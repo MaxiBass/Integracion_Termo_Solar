@@ -6,7 +6,7 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import NUMEROS
+from .const import CONF_OBJETIVO, CONF_OBJETIVO_ENTIDAD, NUMEROS
 from .entity import EntidadTermo
 from .gestor import EntradaTermo
 
@@ -30,8 +30,20 @@ class Ajuste(EntidadTermo, NumberEntity):
         self._attr_native_step = paso
         self._attr_native_unit_of_measurement = unidad
 
+        # Si el objetivo sale de un ayudante, se le copian los límites.
+        externo = entry.options.get(CONF_OBJETIVO_ENTIDAD) if clave == CONF_OBJETIVO else None
+        estado = entry.runtime_data.hass.states.get(externo) if externo else None
+        if estado is not None:
+            for atributo, propio in (("min", "min_value"), ("max", "max_value"), ("step", "step")):
+                try:
+                    setattr(self, f"_attr_native_{propio}", float(estado.attributes[atributo]))
+                except (KeyError, TypeError, ValueError):
+                    pass
+
     @property
     def native_value(self) -> float:
+        if self._clave == CONF_OBJETIVO:
+            return self._gestor.objetivo()
         return float(self._gestor.opcion(self._clave))
 
     async def async_set_native_value(self, value: float) -> None:

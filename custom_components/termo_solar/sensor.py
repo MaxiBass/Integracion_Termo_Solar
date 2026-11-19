@@ -44,6 +44,9 @@ SENSORES: tuple[DescripcionTermo, ...] = (
             "motivo": g.decision.motivo,
             "consigna": g.decision.consigna,
             "simulacion": not g.control,
+            "objetivo": g.ajustes().objetivo,
+            "maxima_con_sol": g.ajustes().maxima_solar,
+            "minima_ducha": g.ajustes().minima_ducha,
         },
     ),
     # El motivo, como texto, para ponerlo tal cual en un panel.

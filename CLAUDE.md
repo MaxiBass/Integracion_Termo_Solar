@@ -47,7 +47,9 @@ tests/test_termo_solar.py
 
 ## Antes de tocar nada, lee `docs/DECISIONES.md`
 
-- No cambiar los `entity_id` ni los `unique_id` (§7).
+- No cambiar los `entity_id` ni los `unique_id` (§8).
+- El objetivo sale del ayudante de Maxi si está configurado (§7): no
+  duplicarlo.
 - Los umbrales del ICP y de la sonda atascada (§3) son decisión de Maxi.
 - Cualquier cosa que encienda el termo exige dato de la sonda.
 - Lo aprendido vive en `.storage/termo_solar` (§5).
